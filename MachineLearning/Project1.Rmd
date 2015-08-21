@@ -1,0 +1,61 @@
+---
+output: html_document
+---
+
+Analysis of activity datasets to find patterns in their behavior.
+========================================
+## Executive Summary
+
+Collections of the personal activity enable the analysis of recorded exercises to predict the manner in which they did the exercise. Based on the existing collections, a model can be built to predict the future manner.
+
+## Models
+
+The training and testing data can be downloaded from https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv and https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv, respectively. The data come from this source http://groupware.les.inf.puc-rio.br/har.
+
+This assumes the datasets have been downloaded to the work directory in RStudio. First we set the seed to be re-producible, and the libraries the we'll need for this analysis.
+```{r}
+training<-read.csv("pml-training.csv")
+testing<-read.csv("pml-testing.csv")
+set.seed(210)
+library("caret")
+library("randomForest")
+```
+
+Since we have the training and testing data, our training data can be divided into training and validation. An initial exploration of the data show there are some columns with NAs and also some columns that are for informational only.
+```{r}
+trainset <- createDataPartition(training$classe, p=0.75, list=FALSE)
+training <- training[trainset,]
+validation <- training[-trainset,]
+str(training)
+```
+
+The cleaning up of the data is done by first using "nearZeroVar" function to find all the columns with near zero variance and exclude them. Also the columns with 50% NAs are excluded from the dataset.
+```{r}
+colDelete <- nearZeroVar(training)
+training <- training[,-colDelete]
+training <- training[,colSums(is.na(training)) < 0.5*nrow(training)]
+#Remove some information only columns
+training <- training[,7:length(training)]
+```
+
+The model chosen is randowForect to build a decision tree for the predictors to classfy the outcome. The results are validated from using the training set itself, and the validation set we partitioned. The comparisons of the predicted and actual results are listed.
+```{r}
+fit <- randomForest(classe~.,data=training)
+
+#training
+pre_tra <- predict(fit,training)
+confusionMatrix(pre_tra,training$classe)
+
+#validation
+pre_val <- predict(fit,validation)
+confusionMatrix(pre_val,validation$classe)
+```
+
+As can be seen, the model fits both training and validation data pretty well.
+
+## Results
+Now, we continue to fit the model with the testing data.
+```{r}
+predict(fit, testing)
+```
+
