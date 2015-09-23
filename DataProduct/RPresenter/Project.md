@@ -1,0 +1,48 @@
+Data Product Project
+========================================================
+date: 23 September, 2015 
+transition: rotate
+transition-speed: slow
+
+Introduction
+========================================================
+
+This is for Developing Data Product project.
+
+- Shiny application is used.
+- Shiny application runs on shiny server.
+- A documentation.
+
+[*Reference](http://shiny.rstudio.com/tutorial/lesson6/)
+
+Function Specifications
+========================================================
+
+- This app allows user to select a stock to examine.
+- Stock volumn is plotted.
+- Pick a range of dates to review.
+- Decide whether or not to correct proces for inflation.
+
+Illustration inputs and Plot
+======================
+![s](StockVis.png)
+
+
+To run it
+==================================
+
+- Open R Studio
+- Change the work directory that has "StockVis" folder in there.
+- Install packages of shiny, downloader, and quantmod.
+- type
+
+```r
+runApp(StockVis)
+```
+- Type in stock symbol or pick a range of dates.
+
+Conclusions
+========================================================
+
+- A very powerful tool to present on the web.
+- An easy to learn R presenter to create slides and publish on the web.
